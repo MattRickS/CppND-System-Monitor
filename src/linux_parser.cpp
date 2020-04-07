@@ -130,12 +130,10 @@ T LinuxParser::ReadStatKey(string findKey) {
   return total;
 }
 
-// TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
   return LinuxParser::ReadStatKey<int>("processes");
 }
 
-// TODO: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
   return LinuxParser::ReadStatKey<int>("procs_running");
 }
