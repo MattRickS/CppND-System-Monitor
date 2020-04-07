@@ -19,8 +19,7 @@ const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
 // System
-template <typename T>
-T ReadStatKey(std::string findKey);
+std::istringstream FindLineStream(std::string filepath, std::string findKey);
 float MemoryUtilization();
 long UpTime();
 std::vector<int> Pids();
