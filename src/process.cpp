@@ -31,7 +31,12 @@ string Process::User() {
   return user_;
 }
 
-long int Process::UpTime() { return LinuxParser::UpTime(pid_); }
+long int Process::UpTime() {
+  if (uptime_ == 0) {
+    uptime_ = LinuxParser::UpTime(pid_);
+  }
+  return uptime_;
+}
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
