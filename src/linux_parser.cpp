@@ -122,11 +122,35 @@ vector<string> LinuxParser::CpuUtilization() {
   return values;
 }
 
+int LinuxParser::ReadStatKey(string findKey) {
+  int total;
+  string key = "";
+  string line;
+  std::ifstream stream(kProcDirectory + kStatFilename);
+  if (stream.is_open()) {
+    std::istringstream linestream;
+    while (!stream.eof()) {
+      std::getline(stream, line);
+      linestream.str(line);
+      linestream >> key;
+      if (key == findKey) {
+        break;
+      }
+    }
+    linestream >> total;
+  }
+  return total;
+}
+
 // TODO: Read and return the total number of processes
-int LinuxParser::TotalProcesses() { return 0; }
+int LinuxParser::TotalProcesses() {
+  return LinuxParser::ReadStatKey("processes");
+}
 
 // TODO: Read and return the number of running processes
-int LinuxParser::RunningProcesses() { return 0; }
+int LinuxParser::RunningProcesses() {
+  return LinuxParser::ReadStatKey("procs_running");
+}
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
