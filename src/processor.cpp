@@ -6,15 +6,8 @@
 #include "linux_parser.h"
 
 float Processor::Utilization() {
-  // This seems like a bad idea to return strings - the LinuxParser is not
-  // entirely abstracting the linux cpu values, forcing Processor to process
-  // Linux data. For the sake of preserving the given signatures, this is left
-  // unchanged
-  std::vector<std::string> string_values = LinuxParser::CpuUtilization();
-  float values[10];
-  for (int i = 0; i < string_values.size(); i++) {
-    values[i] = std::stof(string_values[i]);
-  }
+  // Signature modified for more accurate reporting of values
+  std::vector<float> values = LinuxParser::CpuUtilization();
 
   // CPU utilization determined using algorithm defined here:
   // https://stackoverflow.com/questions/23367857/accurate-calculation-of-cpu-usage-given-in-percentage-in-linux

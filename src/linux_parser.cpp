@@ -92,9 +92,9 @@ long LinuxParser::UpTime() {
   return active_uptime_seconds;
 }
 
-vector<string> LinuxParser::CpuUtilization() {
+vector<float> LinuxParser::CpuUtilization() {
   // user nice system idle iowait irq softirq steal guest guest_nice
-  vector<string> values(10);
+  vector<float> values(10);
   string line;
   std::ifstream stream(kProcDirectory + kStatFilename);
   if (stream.is_open()) {
