@@ -122,8 +122,9 @@ vector<string> LinuxParser::CpuUtilization() {
   return values;
 }
 
-int LinuxParser::ReadStatKey(string findKey) {
-  int total;
+template <typename T>
+T LinuxParser::ReadStatKey(string findKey) {
+  T total;
   string key = "";
   string line;
   std::ifstream stream(kProcDirectory + kStatFilename);
@@ -144,12 +145,12 @@ int LinuxParser::ReadStatKey(string findKey) {
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
-  return LinuxParser::ReadStatKey("processes");
+  return LinuxParser::ReadStatKey<int>("processes");
 }
 
 // TODO: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
-  return LinuxParser::ReadStatKey("procs_running");
+  return LinuxParser::ReadStatKey<int>("procs_running");
 }
 
 // TODO: Read and return the command associated with a process
