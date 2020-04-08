@@ -149,6 +149,7 @@ string LinuxParser::Command(int pid) {
   if (stream.is_open()) {
     string cmdPath;
     std::getline(stream, cmdPath, ' ');
+    // Only have experimental/filesystem which crashes, use standard parsing
     int index = cmdPath.rfind('/', cmdPath.length());
     if (index != string::npos) {
       return cmdPath.substr(index + 1, cmdPath.length() - 1);
@@ -157,9 +158,13 @@ string LinuxParser::Command(int pid) {
   return string();
 }
 
-// TODO: Read and return the memory used by a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid [[maybe_unused]]) { return string(); }
+string LinuxParser::Ram(int pid) {
+  std::istringstream s = FindLineStream(
+      kProcDirectory + std::to_string(pid) + kMeminfoFilename, "VmSize:");
+  int kilobytes;
+  s >> kilobytes;
+  return std::to_string(kilobytes / 1000) + "MB";
+}
 
 int LinuxParser::Uid(int pid) {
   string filepath = kProcDirectory + std::to_string(pid) + kStatusFilename;
