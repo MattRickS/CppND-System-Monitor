@@ -44,6 +44,7 @@ enum CPUStates {
 std::vector<float> CpuUtilization();
 
 // Processes
+std::vector<int> CpuUtilization(int pid);
 std::string Command(int pid);
 std::string Ram(int pid);
 int Uid(int pid);

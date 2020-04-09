@@ -21,6 +21,7 @@ class Process {
   int pid_;
   std::string user_;
   long uptime_{0};
+  float cpu_;
 };
 
 #endif

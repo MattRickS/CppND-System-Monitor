@@ -92,6 +92,7 @@ long LinuxParser::UpTime() {
   return active_uptime_seconds;
 }
 
+// Modified return signature from the given code to a more accurate usage
 vector<float> LinuxParser::CpuUtilization() {
   // user nice system idle iowait irq softirq steal guest guest_nice
   vector<float> values(10);
@@ -104,6 +105,32 @@ vector<float> LinuxParser::CpuUtilization() {
     linestream.ignore(256, ' ');
     for (int i = 0; i < 10; i++) {
       linestream >> values[i];
+    }
+  }
+  return values;
+}
+
+std::vector<int> LinuxParser::CpuUtilization(int pid) {
+  // utime stime cutime cstime starttime
+  vector<int> values;
+  string line, tmp;
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
+  if (stream.is_open()) {
+    long clockticks;
+    std::getline(stream, line);
+    std::istringstream linestream(line);
+    for (int i = 0; i < 23; i++) {
+      // #13 utime
+      // #14 stime
+      // #15 cutime
+      // #16 cstime
+      // #21 starttime
+      if ((i >= 13 && i <= 16) || i == 21) {
+        linestream >> clockticks;
+        values.push_back(clockticks / sysconf(_SC_CLK_TCK));
+      } else {
+        linestream >> tmp;
+      }
     }
   }
   return values;
