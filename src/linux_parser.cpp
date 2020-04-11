@@ -187,7 +187,7 @@ string LinuxParser::Command(int pid) {
 
 string LinuxParser::Ram(int pid) {
   std::istringstream s = FindLineStream(
-      kProcDirectory + std::to_string(pid) + kMeminfoFilename, "VmSize:");
+      kProcDirectory + std::to_string(pid) + kStatusFilename, "VmSize:");
   int kilobytes;
   s >> kilobytes;
   return std::to_string(kilobytes / 1000) + "MB";
