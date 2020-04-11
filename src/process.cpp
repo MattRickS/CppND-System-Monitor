@@ -26,7 +26,7 @@ float Process::CpuUtilization() {
   int current_cpu = values[0] + values[1] + values[2] + values[3];
 
   // Store cpu util for operator<
-  cpu_util_ = (((float)(current_cpu - previous_cpu) / sysconf(_SC_CLK_TCK)) /
+  cpu_util_ = ((float)((current_cpu - previous_cpu) / sysconf(_SC_CLK_TCK)) /
                (float)(sys_uptime_ - previous_uptime));
   cpu_total_ = current_cpu;
   // Note: ncurses display is converting to percentage, no need for multiplier
