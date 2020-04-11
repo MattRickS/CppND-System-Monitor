@@ -19,11 +19,32 @@ using std::vector;
 Processor& System::Cpu() { return cpu_; }
 
 vector<Process>& System::Processes() {
-  processes_.clear();
-  for (int pid : LinuxParser::Pids()) {
-    Process p(pid);
-    processes_.push_back(p);
+  std::set<int> current;
+  for (int p : LinuxParser::Pids()) {
+    current.emplace(p);
   }
+  std::set<int> previous;
+  for (Process p : processes_) {
+    previous.emplace(p.Pid());
+  }
+
+  for (int i = processes_.size() - 1; i >= 0; i--) {
+    if (current.find(processes_[i].Pid()) == current.end()) {
+      // Order isn't important, so remove the item by replacing it with the
+      // item at the back of the list and shrinking the list to avoid
+      // reallocating the remainder of the vector
+      processes_[i] = processes_.back();
+      processes_.pop_back();
+    }
+  }
+
+  for (int pid : current) {
+    if (previous.find(pid) == previous.end()) {
+      processes_.push_back(Process(pid));
+    }
+  }
+
+  std::sort(processes_.rbegin(), processes_.rend());
   return processes_;
 }
 
