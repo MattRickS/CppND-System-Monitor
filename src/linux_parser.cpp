@@ -203,7 +203,6 @@ int LinuxParser::Uid(int pid) {
 
 string LinuxParser::User(int pid) {
   int uid = Uid(pid);
-  // TODO: Some form of caching should happen here - uid -> name doesn't change
   string line;
   std::ifstream stream(kPasswordPath);
   if (stream.is_open()) {
