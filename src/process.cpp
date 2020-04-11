@@ -16,12 +16,20 @@ using std::vector;
 int Process::Pid() { return pid_; }
 
 float Process::CpuUtilization() {
-  long system_uptime = LinuxParser::UpTime();
-  vector<int> values = LinuxParser::CpuUtilization(pid_);
+  // Value in seconds
+  long previous_uptime = sys_uptime_;
+  sys_uptime_ = LinuxParser::UpTime();
 
-  float total_time = values[0] + values[1] + values[2] + values[3];
-  float seconds = system_uptime - values[4] / sysconf(_SC_CLK_TCK);
-  cpu_util_ = 100.0 * ((total_time / sysconf(_SC_CLK_TCK)) / seconds);
+  // Values in seconds: [utime, stime, cutime, cstime]
+  int previous_cpu = cpu_total_;
+  vector<int> values = LinuxParser::CpuUtilization(pid_);
+  int current_cpu = values[0] + values[1] + values[2] + values[3];
+
+  // Store cpu util for operator<
+  cpu_util_ = (((float)(current_cpu - previous_cpu) / sysconf(_SC_CLK_TCK)) /
+               (float)(sys_uptime_ - previous_uptime));
+  cpu_total_ = current_cpu;
+  // Note: ncurses display is converting to percentage, no need for multiplier
   return cpu_util_;
 }
 
@@ -49,5 +57,7 @@ long int Process::UpTime() {
 }
 
 bool Process::operator<(Process const& a) const {
+  // TODO: Always comparing with an out of date value, but can't call method
+  // due to const restrictions
   return cpu_util_ < a.cpu_util_;
 }
