@@ -52,7 +52,9 @@ string Process::User() {
 long int Process::UpTime() { return LinuxParser::UpTime(pid_); }
 
 bool Process::operator<(Process const& a) const {
-  // TODO: Always comparing with an out of date value, but can't call method
-  // due to const restrictions
-  return cpu_util_ < a.cpu_util_;
+  // cpu_util_ is a cached value and may be out of date, but can't call method
+  // due to const restrictions - not sure what best solution for this would be?
+  // For the sake of sanity, fallback on pid if the cpu difference is neglible
+  // This will show more recent processes for equal usage
+  return a.cpu_util_ - cpu_util_ > 0.01 || pid_ < a.pid_;
 }
