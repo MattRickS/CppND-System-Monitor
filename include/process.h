@@ -20,8 +20,12 @@ class Process {
  private:
   int pid_;
   std::string user_;
-  long uptime_{0};
-  float cpu_;
+  std::string command_;
+  long uptime_;
+  // Cached for calculating cpu util over time
+  long sys_uptime_ {0};
+  int cpu_total_ {0};
+  float cpu_util_ {0.0f};
 };
 
 #endif

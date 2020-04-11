@@ -93,9 +93,9 @@ long LinuxParser::UpTime() {
 }
 
 // Modified return signature from the given code to a more accurate usage
-vector<float> LinuxParser::CpuUtilization() {
+vector<long> LinuxParser::CpuUtilization() {
   // user nice system idle iowait irq softirq steal guest guest_nice
-  vector<float> values(10);
+  vector<long> values(10);
   string line;
   std::ifstream stream(kProcDirectory + kStatFilename);
   if (stream.is_open()) {
@@ -119,7 +119,7 @@ std::vector<int> LinuxParser::CpuUtilization(int pid) {
     long clockticks;
     std::getline(stream, line);
     std::istringstream linestream(line);
-    for (int i = 0; i < 23; i++) {
+    for (int i = 0; i < 22; i++) {
       // #13 utime
       // #14 stime
       // #15 cutime
@@ -127,7 +127,7 @@ std::vector<int> LinuxParser::CpuUtilization(int pid) {
       // #21 starttime
       if ((i >= 13 && i <= 16) || i == 21) {
         linestream >> clockticks;
-        values.push_back(clockticks / sysconf(_SC_CLK_TCK));
+        values.push_back(clockticks);
       } else {
         linestream >> tmp;
       }
@@ -177,7 +177,7 @@ string LinuxParser::Command(int pid) {
     string cmdPath;
     std::getline(stream, cmdPath, ' ');
     // Only have experimental/filesystem which crashes, use standard parsing
-    int index = cmdPath.rfind('/', cmdPath.length());
+    std::size_t index = cmdPath.rfind('/', cmdPath.length());
     if (index != string::npos) {
       return cmdPath.substr(index + 1, cmdPath.length() - 1);
     }
@@ -239,5 +239,5 @@ long LinuxParser::UpTime(int pid) {
     }
     linestream >> uptime;
   }
-  return uptime;
+  return uptime / sysconf(_SC_CLK_TCK);
 }

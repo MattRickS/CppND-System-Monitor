@@ -6,8 +6,8 @@ class Processor {
   float Utilization();
 
  private:
-  int idle_{0};
-  int total_{0};
+  long idle_{0};
+  long total_{0};
 };
 
 #endif

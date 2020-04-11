@@ -7,18 +7,18 @@
 
 float Processor::Utilization() {
   // Signature modified for more accurate reporting of values
-  std::vector<float> values = LinuxParser::CpuUtilization();
+  std::vector<long> values = LinuxParser::CpuUtilization();
 
   // CPU utilization determined using algorithm defined here:
   // https://stackoverflow.com/questions/23367857/accurate-calculation-of-cpu-usage-given-in-percentage-in-linux
 
-  int prev_idle = idle_;
-  int prev_total = total_;
+  long prev_idle = idle_;
+  long prev_total = total_;
 
   // 0    1    2      3    4      5   6       7     8     9
   // user nice system idle iowait irq softirq steal guest guest_nice
   idle_ = values[3] + values[4];
-  int nonidle =
+  long nonidle =
       values[0] + values[1] + values[2] + values[5] + values[6] + values[7];
   total_ = idle_ + nonidle;
 

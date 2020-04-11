@@ -21,11 +21,16 @@ float Process::CpuUtilization() {
 
   float total_time = values[0] + values[1] + values[2] + values[3];
   float seconds = system_uptime - values[4] / sysconf(_SC_CLK_TCK);
-  cpu_ = 100.0 * ((total_time / sysconf(_SC_CLK_TCK)) / seconds);
-  return cpu_;
+  cpu_util_ = 100.0 * ((total_time / sysconf(_SC_CLK_TCK)) / seconds);
+  return cpu_util_;
 }
 
-string Process::Command() { return LinuxParser::Command(pid_); }
+string Process::Command() {
+  if (command_.empty()) {
+    command_ = LinuxParser::Command(pid_);
+  }
+  return command_;
+}
 
 string Process::Ram() { return LinuxParser::Ram(pid_); }
 
@@ -43,4 +48,6 @@ long int Process::UpTime() {
   return uptime_;
 }
 
-bool Process::operator<(Process const& a) const { return cpu_ < a.cpu_; }
+bool Process::operator<(Process const& a) const {
+  return cpu_util_ < a.cpu_util_;
+}
