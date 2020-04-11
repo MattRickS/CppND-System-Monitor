@@ -19,13 +19,13 @@ class Process {
 
  private:
   int pid_;
+  // Cached constant lifetime values
   std::string user_;
   std::string command_;
-  long uptime_;
   // Cached for calculating cpu util over time
-  long sys_uptime_ {0};
-  int cpu_total_ {0};
-  float cpu_util_ {0.0f};
+  long sys_uptime_{0};
+  int cpu_total_{0};
+  float cpu_util_{0.0f};
 };
 
 #endif

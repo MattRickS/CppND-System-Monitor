@@ -49,12 +49,7 @@ string Process::User() {
   return user_;
 }
 
-long int Process::UpTime() {
-  if (uptime_ == 0) {
-    uptime_ = LinuxParser::UpTime(pid_);
-  }
-  return uptime_;
-}
+long int Process::UpTime() { return LinuxParser::UpTime(pid_); }
 
 bool Process::operator<(Process const& a) const {
   // TODO: Always comparing with an out of date value, but can't call method

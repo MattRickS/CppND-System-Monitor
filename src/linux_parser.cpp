@@ -228,7 +228,7 @@ string LinuxParser::User(int pid) {
 
 long LinuxParser::UpTime(int pid) {
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
-  long uptime;
+  long starttime;
   if (stream.is_open()) {
     string line, tmp;
     std::getline(stream, line);
@@ -237,7 +237,7 @@ long LinuxParser::UpTime(int pid) {
     for (int i = 0; i < 21; i++) {
       linestream >> tmp;
     }
-    linestream >> uptime;
+    linestream >> starttime;
   }
-  return uptime / sysconf(_SC_CLK_TCK);
+  return LinuxParser::UpTime() - starttime / sysconf(_SC_CLK_TCK);
 }
